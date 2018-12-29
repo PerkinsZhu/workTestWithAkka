@@ -8,24 +8,12 @@ import com.typesafe.config.ConfigFactory
   **/
 object TestApp {
   def main(args: Array[String]): Unit = {
-
-    val serverConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.canonical.port=2551
-        """)
-      .withFallback(ConfigFactory.parseString("akka.cluster.roles = [backend]"))
-      .withFallback(ConfigFactory.load("factorial"))
-    val serverSystem = ActorSystem("ClusterSystem", serverConfig)
-    serverSystem.actorOf(Props[ServerActor], name = "factorialBackend")
-
-
-    val clientConfig = ConfigFactory.parseString("akka.cluster.roles = [frontend]").
-      withFallback(ConfigFactory.load("factorial"))
-    val clientSystem = ActorSystem("PerkinsCluster",clientConfig)
-    clientSystem.actorOf(Props[ClientActor], name = "clientActor")
-
-
-
-
+    ServerActor.startTask(2551)
+    ServerActor.startTask(2552)
+    ServerActor.startTask(2553)
+    ServerActor.startTask(2554)
+    ServerActor.startTask(2555)
+    ClientActor.startTask()
   }
 
 
