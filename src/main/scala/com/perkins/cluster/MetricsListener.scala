@@ -17,8 +17,8 @@ class MetricsListener extends Actor with ActorLogging {
   def receive = {
     case ClusterMetricsChanged(clusterMetrics) =>
       clusterMetrics.filter(_.address == selfAddress) foreach { nodeMetrics =>
-        logHeap(nodeMetrics)
-        logCpu(nodeMetrics)
+        /*logHeap(nodeMetrics)
+        logCpu(nodeMetrics)*/
       }
     case state: CurrentClusterState => // Ignore.
   }
