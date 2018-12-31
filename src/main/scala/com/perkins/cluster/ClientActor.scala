@@ -1,5 +1,7 @@
 package com.perkins.cluster
 
+import java.util.Date
+
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.cluster.Cluster
 import akka.routing.FromConfig
@@ -27,7 +29,7 @@ class ClientActor extends Actor with ActorLogging {
 
     Future {
       while (true) {
-        serverProxy ! Message("client-01-serverRoute", "i am client-01") //使用 serverProxy会实现负载均衡，因为在配置文件中有配置
+        serverProxy ! Message("client-01-serverRoute", "message--->"+new Date().getTime) //使用 serverProxy会实现负载均衡，因为在配置文件中有配置
 //        server ! Message("client-01-serverRoute", "i am client-01")  //使用 server不会实现负载均衡
         /**
           * 注意两个server的路径
