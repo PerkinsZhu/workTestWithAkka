@@ -24,7 +24,6 @@ class ClientActor extends Actor with ActorLogging {
 
     // 使用路由构造 server,这里会实现负载均衡，自动选择server处理tell请求
     val serverProxy = context.actorOf(FromConfig.props(), name = "serverRouter")
-    log.info("serverProxy-props==================>" + FromConfig.props())
     log.info("serverProxy==================>" + serverProxy.path)
 
     Future {

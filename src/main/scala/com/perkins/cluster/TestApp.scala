@@ -8,11 +8,10 @@ import com.typesafe.config.ConfigFactory
   **/
 object TestApp {
   def main(args: Array[String]): Unit = {
-    ServerActor.startTask(2551)
-    ServerActor.startTask(2552)
-    ServerActor.startTask(2553)
-    ServerActor.startTask(2554)
-    ServerActor.startTask(2555)
+    2551 to 2556 foreach(i =>{
+      ServerActor.startTask(i)
+    })
+
     ClientActor.startTask()
   }
 

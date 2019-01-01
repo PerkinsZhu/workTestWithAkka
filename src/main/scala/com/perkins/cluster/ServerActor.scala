@@ -34,7 +34,7 @@ class ServerActor extends Actor with ActorLogging {
 
     }
     case UpdateSuccess(Counter1Key, Some(replyTo: ActorRef)) ⇒ {
-      replyTo ! "ack"
+      replyTo ! "ack"  `
     }
     case UpdateTimeout(Counter1Key, Some(replyTo: ActorRef)) ⇒ {
       replyTo ! "nack"
@@ -48,6 +48,9 @@ class ServerActor extends Actor with ActorLogging {
     case NotFound(Set1Key, req) ⇒ // key set1 does not exist
     case GetSuccess(key, data) => {
       log.info("GetSuccess--->" + key + "====>" + data)
+    }
+    case UpdateSuccess(key, data) => {
+      log.info("UpdateSuccess--->" + key + "====>" + data)
     }
     case a: Any => log.info("unknowMessage-->" + a.toString)
   }
