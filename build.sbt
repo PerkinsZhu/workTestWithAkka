@@ -7,7 +7,7 @@ version := "0.1"
 scalaVersion := "2.12.6"
 
 
-val akkaVersion = "2.5.18"
+val akkaVersion = "2.5.19"
 
 lazy val `akka-sample-cluster-scala` = project
   .in(file("."))
@@ -27,7 +27,8 @@ lazy val `akka-sample-cluster-scala` = project
       "com.typesafe.akka" %% "akka-multi-node-testkit" % akkaVersion,
       "org.scalatest" %% "scalatest" % "3.0.5" % Test,
       "io.kamon" % "sigar-loader" % "1.6.6-rev002",
-      "com.typesafe.akka" %% "akka-distributed-data" % akkaVersion
+      "com.typesafe.akka" %% "akka-distributed-data" % akkaVersion,
+      "com.typesafe.akka" %% "akka-cluster-typed" % akkaVersion
     ),
     fork in run := true,
     mainClass in (Compile, run) := Some("sample.cluster.simple.SimpleClusterApp"),

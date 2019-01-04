@@ -34,7 +34,7 @@ class ServerActor extends Actor with ActorLogging {
 
     }
     case UpdateSuccess(Counter1Key, Some(replyTo: ActorRef)) ⇒ {
-      replyTo ! "ack"  `
+      replyTo ! "ack"
     }
     case UpdateTimeout(Counter1Key, Some(replyTo: ActorRef)) ⇒ {
       replyTo ! "nack"
