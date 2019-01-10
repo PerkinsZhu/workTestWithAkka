@@ -48,6 +48,12 @@ class ClientActor extends Actor with ActorLogging {
     case msg: Message => {
       log.info(s"receive message from ${msg.name},conten:${msg.msg}")
     }
+    case data:Set[String] =>{
+      println("接收到查询结果"+data)
+    }
+    case data =>{
+      println("接收到未知消息"+data)
+    }
   }
 }
 

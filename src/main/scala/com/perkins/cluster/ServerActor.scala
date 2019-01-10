@@ -20,6 +20,8 @@ class ServerActor extends Actor with ActorLogging {
 
   val replicator = DistributedData(context.system).replicator
 
+  replicator ! Subscribe(Set1Key, self) //订阅数据的变化
+
   override def receive: Receive = {
     case msg: Message => {
       log.info(s"receive message from ${msg.name},conten:${msg.msg}")
@@ -27,10 +29,19 @@ class ServerActor extends Actor with ActorLogging {
       //      actor ! Message(self.path.address.toString,"i hava message")
 
       // 分布式数据集
-      replicator ! Get(Set1Key, ReadLocal)
+      replicator ! Get(Set1Key, ReadLocal, Some(sender()))
       //      replicator ! Update(Counter1Key, PNCounter(), WriteLocal)(_ + 1)
+
+      val writeMajority = WriteMajority(timeout = 5.seconds)
+      // 从数据中删除set1key
+      // replicator ! Delete(Set1Key, writeMajority,Some(sender()))
+
+
       val writeTo3 = WriteTo(n = 2, timeout = 1.second)
-      replicator ! Update(Set1Key, GSet.empty[String], writeTo3)(_ + msg.msg)
+      replicator ! Update(Set1Key, GSet.empty[String], writeTo3)(item => {
+        println("---send--->" + item)
+        item + msg.msg
+      })
 
     }
     case UpdateSuccess(Counter1Key, Some(replyTo: ActorRef)) ⇒ {
@@ -39,9 +50,10 @@ class ServerActor extends Actor with ActorLogging {
     case UpdateTimeout(Counter1Key, Some(replyTo: ActorRef)) ⇒ {
       replyTo ! "nack"
     }
-    case g@GetSuccess(Set1Key, req) ⇒ {
+    case g@GetSuccess(Set1Key, Some(replyTo: ActorRef)) ⇒ {
       val elements = g.get(Set1Key).elements
       log.info("getResult--->" + elements)
+      replyTo ! elements
     }
     case GetFailure(Set1Key, req) ⇒
     // read from 3 nodes failed within 1.second
@@ -51,6 +63,18 @@ class ServerActor extends Actor with ActorLogging {
     }
     case UpdateSuccess(key, data) => {
       log.info("UpdateSuccess--->" + key + "====>" + data)
+    }
+    case c@Changed(Set1Key) ⇒ {
+      val currentValue = c.get(Set1Key)
+      log.info("当前数据发生改变" + currentValue)
+    }
+    case c@Changed(key) ⇒ {
+      val currentValue = c.get(key)
+      log.info(s"当前数据【${key}】发生改变" + currentValue)
+    }
+    case c@DataDeleted(key, Some(request: ActorRef)) ⇒ {
+      log.info(s"数据${key}被删除掉")
+      request ! s"${key}已被删除"
     }
     case a: Any => log.info("unknowMessage-->" + a.toString)
   }

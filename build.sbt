@@ -37,4 +37,5 @@ lazy val `akka-sample-cluster-scala` = project
     parallelExecution in Test := false,
     licenses := Seq(("CC0", url("http://creativecommons.org/publicdomain/zero/1.0")))
   )
+  .enablePlugins(MultiJvmPlugin)
   .configs (MultiJvm)
